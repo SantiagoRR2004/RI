@@ -1,0 +1,9 @@
+La Inteligencia Artificial se ha convertido en un área fundamental de la ciencia computacional. 
+Cuando hablamos de INTELIGENCIA ARTIFICIAL, nos referimos tanto a algoritmos de aprendizaje como a modelos capaces de simular razonamiento humano. 
+Sin embargo, no siempre se reconoce que la inteligencia y lo artificial son conceptos distintos, lo cual puede complicar su análisis.
+
+Históricamente, la Inteligencia artificial ha sido percibida como un intento de replicar procesos mentales. 
+Algunos investigadores la relacionan con la filosofía de la mente, mientras que otros prefieren un enfoque más práctico, centrado en aplicaciones como los motores de búsqueda y los sistemas de recomendacion.
+
+En este documento, se insiste en que el aprendizaje automatico no debe confundirse con la simple programación determinista. 
+La presencia de errores ortográficos o de formato, como la ausencia de acentos en recuperación (recuperacion) o el uso de plurales diferentes como red y redes neuronales, puede afectar al procesamiento automático de la informacion.

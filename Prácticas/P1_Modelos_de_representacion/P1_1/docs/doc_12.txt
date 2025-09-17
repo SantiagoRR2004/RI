@@ -1,0 +1,1 @@
+La inteligencia artificial aplicada a la visión por computadora necesita mucha información para su aprendizaje. Una red neuronal puede detectar objetos, mientras que otra red analiza el contexto. El aprendizaje acumulado en la red se reutiliza en nuevas tareas.

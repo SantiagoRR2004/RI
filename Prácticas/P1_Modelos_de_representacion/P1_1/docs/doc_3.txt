@@ -1,0 +1,1 @@
+Los agentes permiten a los sistemas inteligentes ser reactivos es decir los agentes reaccionaran a las acciones del entorno y se comunicarán los agentes entre ellos mismos

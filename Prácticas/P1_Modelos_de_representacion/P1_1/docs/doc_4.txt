@@ -1,0 +1,1 @@
+Las redes neuronales tratan de recuperar el conocimiento como por ejemplo las ANN através de los pesos de sus redes neuronales.

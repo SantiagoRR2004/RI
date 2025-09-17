@@ -1,0 +1,1 @@
+Una red neuronal puede almacenar representaciones de información semántica. Esta red se entrena con aprendizaje profundo y permite a la inteligencia artificial responder preguntas. En la práctica, la red se convierte en una extensión del conocimiento humano.

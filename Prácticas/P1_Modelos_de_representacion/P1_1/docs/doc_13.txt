@@ -1,0 +1,1 @@
+Los robots en un entorno multiusuario cooperan mediante una red. Cada robot intercambia información y construye estrategias gracias al aprendizaje conjunto. La red garantiza que los robots evolucionen coordinadamente.

@@ -1,0 +1,1 @@
+Un agente conectado a una red puede colaborar con otros agentes. En entornos de recuperación de información, la red actúa como medio de comunicación y permite al agente aprender de la experiencia. Este aprendizaje distribuido depende de la eficiencia de la red.

@@ -1,0 +1,9 @@
+Un agente inteligente es un sistema que percibe su entorno a través de sensores y actúa sobre él por medio de actuadores. 
+La idea central es que el agente busque siempre la acción más racional, maximizando algún criterio de utilidad.
+
+En el campo de la Inteligencia artificial, los agentes se han usado para modelar desde robots físicos hasta programas de software que gestionan información. 
+Los sistemas multiagente, donde múltiples agentes colaboran o compiten, se han vuelto relevantes para simular fenómenos sociales y económicos.
+
+No obstante, en algunos textos aparece “agente” en singular, mientras que en otros encontramos “agentes” en plural. 
+Nuestro vocabulario no distingue adecuadamente estas variantes, lo cual generará problemas al construir la matriz de incidencia término-documento. 
+Estos detalles son cruciales para comprender por qué las técnicas de normalización lingüística son necesarias en Recuperacion de Informacion.

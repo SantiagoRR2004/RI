@@ -1,0 +1,1 @@
+En la recuperación de información, la red actúa como motor de búsqueda. Con redes neuronales, los algoritmos identifican patrones en la información. El aprendizaje supervisado en las redes mejora la relevancia de los resultados.

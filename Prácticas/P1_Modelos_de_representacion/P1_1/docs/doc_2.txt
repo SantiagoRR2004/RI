@@ -1,0 +1,3 @@
+La inteligencia artificial ha permitido el desarrollo de sistemas donde un agente puede adaptarse a su entorno mediante aprendizaje automático.
+Uno de los enfoques más potentes es el uso de una red neuronal, capaz de reconocer patrones complejos en grandes volúmenes de datos.
+Además, las técnicas modernas de recuperación de información utilizan estos modelos para mejorar la búsqueda de documentos y la organización del conocimiento.
