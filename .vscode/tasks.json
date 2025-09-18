@@ -1,0 +1,99 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup Environment and Install Dependencies",
+      "type": "shell",
+      "command": "python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+      "windows": {
+        "command": "python3 -m venv .venv; Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process; .venv\\Scripts\\Activate.ps1; pip install -r requirements.txt"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen" // Run this task when the folder is opened
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install Python Extension",
+      "type": "shell",
+      "command": "code --install-extension ms-python.python",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen" // Run this task when the folder is opened
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install Prettier Extension",
+      "type": "shell",
+      "command": "code --install-extension esbenp.prettier-vscode",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen" // Run this task when the folder is opened
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install Run on save",
+      "type": "shell",
+      "command": "code --install-extension Gruntfuggly.triggertaskonsave",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen" // Run this task when the folder is opened
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Format Code with Black",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/python3",
+      "windows": {
+        "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
+      },
+      "args": ["-m", "black", "."],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

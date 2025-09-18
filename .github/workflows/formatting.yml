@@ -1,0 +1,57 @@
+name: Formatting code with Black and Prettier
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12" # Latest stable version
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black
+
+      - name: Format code with Black
+        run: |
+          black . || true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install Prettier
+        run: |
+          npm install --global prettier
+
+      - name: Format JSON files with Prettier
+        run: |
+          prettier --write "**/*.json" --ignore-unknown
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          if ! git diff --quiet; then
+            git add .
+            git commit -m "chore: Auto-format code with Black and Prettier [GitHub Action]"
+            git push
+          else
+            echo "No changes to push."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
