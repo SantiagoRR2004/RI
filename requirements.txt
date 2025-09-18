@@ -1,1 +1,4 @@
 black
+ipykernel
+pandas
+numpy
