@@ -2,3 +2,4 @@ black
 ipykernel
 pandas
 numpy
+nbstripout
