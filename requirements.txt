@@ -3,3 +3,4 @@ ipykernel
 pandas
 numpy
 nbstripout
+Whoosh
