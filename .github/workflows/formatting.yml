@@ -23,11 +23,15 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install black
+          pip install black nbqa
 
-      - name: Format code with Black
+      - name: Format Python files with Black
         run: |
           black . || true
+
+      - name: Format Jupyter notebooks with Black via nbqa
+        run: |
+          nbqa black "**/*.ipynb" || true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
