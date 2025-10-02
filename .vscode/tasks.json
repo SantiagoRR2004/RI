@@ -94,6 +94,28 @@
         "panel": "shared"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Setup nbstripout for Jupyter Notebooks",
+      "type": "shell",
+      "command": ".venv/bin/python -m nbstripout --install --attributes .gitattributes",
+      "windows": {
+        "command": ".venv\\Scripts\\python.exe -m nbstripout --install --attributes .gitattributes"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen" // Run this task when the folder is opened
+      },
+      "problemMatcher": [],
+      "dependsOn": "Setup Environment and Install Dependencies"
     }
   ]
 }
