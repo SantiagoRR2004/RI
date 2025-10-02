@@ -1,6 +1,6 @@
 # Index schema folders
 index_schema*/
-indexdir/
+indexdir*/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
