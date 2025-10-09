@@ -43,6 +43,8 @@ class Document:
         self.setPriority()
         self.setTitle()
         self.setText()
+        self.setAuthor()
+        self.cleanText()
         self.setKeywords()
 
     def setDocumentNumber(self) -> None:
@@ -214,6 +216,48 @@ class Document:
         match = re.search(r"<TEXT>(.*?)</TEXT>", self.rawText, re.DOTALL)
         self.text = match.group(1)
 
+    def setAuthor(self) -> None:
+        """
+        Set the document author.
+
+        It is not always present inside of the text.
+        To find it we look that the word "Por" is at
+        the beginning of the whole text and get
+        everything that comes after it until a line break.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        match = re.search(r"^\s*Por (.*?)\n", self.text)
+        if match:
+            self.author = match.group(1).strip()
+            # Remove the author line from the text
+            self.text = re.sub(r"^\s*Por .*?\n", "", self.text, count=1).strip()
+        else:
+            self.author = None
+
+    def cleanText(self) -> None:
+        """
+        Clean the document text by removing extra whitespace
+        and the author at the end.
+
+        Because each text is very small, we do not need to
+        keep line breaks.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        self.text = re.sub(r"\s+", r" ", self.text).strip()
+
+        # This pattern matches the last 'EFE' and deletes everything after it
+        self.text = re.sub(r"(.*)EFE.*", r"\1", self.text).strip()
+
     def setKeywords(self) -> None:
         """
         Set the document keywords.
@@ -252,5 +296,6 @@ class Document:
             "priority": self.priority,
             "title": self.title,
             "text": self.text,
+            "author": self.author,
             "keywords": self.keywords,
         }
