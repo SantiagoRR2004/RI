@@ -44,6 +44,7 @@ class Document:
         self.setTitle()
         self.setText()
         self.setAuthor()
+        self.setLocation()
         self.cleanText()
         self.setKeywords()
 
@@ -239,6 +240,33 @@ class Document:
         else:
             self.author = None
 
+    def setLocation(self) -> None:
+        """
+        Set the document location.
+
+        It is not always present inside of the text.
+        To find it we look for "(EFE).-" and everything
+        that came before it. If found, the location is all
+        the text before a comma if the length is small
+        enough.
+
+        Everything in the match is removed from the text.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        pattern = r"^([\s\S]*?\(EFE\)\.-)"
+        match = re.search(pattern, self.text)
+        if match and len(match.group(1)) < 100:
+            self.location = match.group(1).strip().split(",")[0]
+            # Remove the location line from the text
+            self.text = re.sub(pattern, "", self.text, count=1).strip()
+        else:
+            self.location = None
+
     def cleanText(self) -> None:
         """
         Clean the document text by removing extra whitespace
@@ -297,5 +325,6 @@ class Document:
             "title": self.title,
             "text": self.text,
             "author": self.author,
+            "location": self.location,
             "keywords": self.keywords,
         }
