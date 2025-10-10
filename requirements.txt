@@ -4,3 +4,4 @@ pandas
 numpy
 nbstripout
 Whoosh
+rake-nltk

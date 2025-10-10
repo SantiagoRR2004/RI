@@ -1,10 +1,16 @@
+from rake_nltk import Rake
+import nltk
 import re
+
+nltk.download("stopwords")
 
 
 class Document:
     """
     Class representing a document object.
     """
+
+    rake = Rake(stopwords=nltk.corpus.stopwords.words("spanish"), language="spanish")
 
     def __init__(self, rawText: str) -> None:
         """
@@ -298,7 +304,16 @@ class Document:
         Returns:
             - None
         """
-        self.keywords = None
+        # Extract keywords
+        self.rake.extract_keywords_from_text(self.text)
+
+        # Get ranked phrases (keywords)
+        keywords = self.rake.get_ranked_phrases()
+
+        # Keep only the ones with one word
+        keywords = [kw for kw in keywords if len(kw.split()) == 1]
+
+        self.keywords = keywords[:3]
 
     def getData(self) -> dict:
         """
