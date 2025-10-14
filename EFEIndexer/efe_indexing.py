@@ -13,6 +13,7 @@ def create(dirpath: str, indexpath: str):
     else:
         print(f"Creating index at {indexpath} with documents from {dirpath}")
         collection = parse_efe_corpus(dirpath)
+        collection.createIndex(indexpath)
 
 
 if __name__ == "__main__":
