@@ -12,7 +12,7 @@ class Collection:
     schema = fields.Schema(
         documentNumber=fields.ID(stored=True, unique=True),
         # Skip documentID as it is the same as documentNumber
-        date=fields.DATETIME(stored=True),
+        datetime=fields.DATETIME(stored=True),
     )
 
     def __init__(self, inputFolder: str) -> None:
@@ -76,6 +76,6 @@ class Collection:
                 data = document.getData()
                 writer.add_document(
                     documentNumber=data["documentNumber"],
-                    date=data["date"],
+                    datetime=data["datetime"],
                 )
         writer.commit()

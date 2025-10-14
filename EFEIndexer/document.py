@@ -1,3 +1,4 @@
+from datetime import datetime
 from rake_nltk import Rake
 import nltk
 import re
@@ -38,8 +39,7 @@ class Document:
         """
         self.setDocumentNumber()
         self.setDocumentID()
-        self.setDate()
-        self.setTime()
+        self.setDatetime()
         self.setSubCategory()
         self.setFiles()
         self.setDestination()
@@ -80,9 +80,9 @@ class Document:
         match = re.search(r"<DOCID>(.*?)</DOCID>", self.rawText)
         self.documentID = match.group(1)
 
-    def setDate(self) -> None:
+    def setDatetime(self) -> None:
         """
-        Set the document date.
+        Set the document datetime.
 
         Args:
             - None
@@ -90,8 +90,14 @@ class Document:
         Returns:
             - None
         """
-        match = re.search(r"<DATE>(\d{8})</DATE>", self.rawText)
-        self.date = match.group(1)
+        matchDate = re.search(r"<DATE>(\d{8})</DATE>", self.rawText)
+        matchTime = re.search(r"<TIME>(\d{2}\.\d{2})</TIME>", self.rawText)
+        datePart = datetime.strptime(matchDate.group(1), "%Y%m%d").date()
+        timePart = datetime.strptime(matchTime.group(1), "%H.%M").time()
+
+        combined = datetime.combine(datePart, timePart)
+
+        self.datetime = combined
 
     def setTime(self) -> None:
         """
@@ -328,8 +334,7 @@ class Document:
         return {
             "documentNumber": self.documentNumber,
             "documentID": self.documentID,
-            "date": self.date,
-            "time": self.time,
+            "datetime": self.datetime,
             "subCategory": self.subCategory,
             "files": self.files,
             "destination": self.destination,
