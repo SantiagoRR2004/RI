@@ -1,11 +1,12 @@
 from parser_efe_corpus import parse_efe_corpus
+from indexManager import IndexManager
 import argparse
 import shutil
 import sys
 import os
 
 
-def create(dirpath: str, indexpath: str):
+def create(dirpath: str, indexpath: str) -> None:
     # If it exists, remove index
     if os.path.exists(indexpath):
         print(f"Removing index at {indexpath}")
@@ -14,6 +15,12 @@ def create(dirpath: str, indexpath: str):
         print(f"Creating index at {indexpath} with documents from {dirpath}")
         collection = parse_efe_corpus(dirpath)
         collection.createIndex(indexpath)
+
+
+def stats(indexpath: str) -> None:
+    print(f"Showing statistics for index at {indexpath}")
+    im = IndexManager(indexpath)
+    im.showStats()
 
 
 if __name__ == "__main__":
@@ -61,4 +68,4 @@ if __name__ == "__main__":
         print(f"Adding documents {args.documents} to index at {args.path}")
 
     elif args.stats:
-        print(f"Showing statistics for index at {args.path}")
+        stats(args.path)

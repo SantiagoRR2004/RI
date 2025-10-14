@@ -5,3 +5,4 @@ numpy
 nbstripout
 Whoosh
 rake-nltk
+matplotlib
