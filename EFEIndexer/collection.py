@@ -12,7 +12,20 @@ class Collection:
     schema = fields.Schema(
         documentNumber=fields.ID(stored=True, unique=True),
         # Skip documentID as it is the same as documentNumber
+        documentID=fields.STORED(),
         datetime=fields.DATETIME(stored=True),
+        subCategory=fields.KEYWORD(stored=True),
+        files=fields.ID(stored=True),
+        destination=fields.KEYWORD(stored=True),
+        category=fields.KEYWORD(stored=True),
+        key=fields.ID(stored=True),
+        number=fields.ID(stored=True),
+        priority=fields.ID(stored=True),
+        title=fields.TEXT(stored=True),
+        text=fields.TEXT(stored=True),
+        author=fields.TEXT(stored=True),
+        location=fields.TEXT(stored=True),
+        keywords=fields.KEYWORD(stored=True, commas=True),
     )
 
     def __init__(self, inputFolder: str) -> None:
@@ -74,8 +87,5 @@ class Collection:
         for file in self.files:
             for document in file.documents:
                 data = document.getData()
-                writer.add_document(
-                    documentNumber=data["documentNumber"],
-                    datetime=data["datetime"],
-                )
+                writer.add_document(**data)
         writer.commit()
