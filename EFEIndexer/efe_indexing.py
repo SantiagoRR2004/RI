@@ -1,13 +1,26 @@
 from parser_efe_corpus import parse_efe_corpus
 import argparse
+import shutil
 import sys
 import os
 
-# python efe_indexing.py --create --path <path_ouput> --documents <SGML_files>
-# python efe_indexing.py --add --path <index_path> --documents <SGML_files>
-# python efe_indexing.py --stats --path <index_path>
+
+def create(dirpath: str, indexpath: str):
+    # If it exists, remove index
+    if os.path.exists(indexpath):
+        print(f"Removing index at {indexpath}")
+        shutil.rmtree(indexpath)
+    else:
+        print(f"Creating index at {indexpath} with documents from {dirpath}")
+        collection = parse_efe_corpus(dirpath)
+
 
 if __name__ == "__main__":
+
+    # python efe_indexing.py --create --path <path_output> --documents <SGML_files>
+    # python efe_indexing.py --add --path <index_path> --documents <SGML_files>
+    # python efe_indexing.py --stats --path <index_path>
+
     currentDirectory = os.path.dirname(os.path.abspath(__file__))
 
     parser = argparse.ArgumentParser()
@@ -41,11 +54,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.create:
-        print(f"Creating index at {args.path} with documents {args.documents}")
-        if args.documents:
-            parse_efe_corpus(args.documents)
-        else:
-            parse_efe_corpus()
+        create(args.documents, args.path)
 
     elif args.add:
         print(f"Adding documents {args.documents} to index at {args.path}")

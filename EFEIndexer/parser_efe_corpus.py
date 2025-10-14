@@ -1,17 +1,23 @@
 from collection import Collection
 import os
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
 
+def parse_efe_corpus(dirpath: str = "efe") -> Collection:
+    """
+    Parse the EFE corpus located in the specified directory.
 
-def parse_efe_corpus(dirname: str = "efe"):
-    efe_path = os.path.join(current_dir, dirname)
+    Args:
+        - dirname (str): The directory containing the EFE SGML files. Default is "efe".
 
-    collection = Collection(efe_path)
-
-    for file in collection.files:
-        print(file.documents[0].getData()["title"])
+    Returns:
+        - Collection: A Collection object containing the parsed documents.
+    """
+    return Collection(dirpath)
 
 
 if __name__ == "__main__":
-    parse_efe_corpus()
+    currentDirectory = os.path.dirname(os.path.abspath(__file__))
+    c = parse_efe_corpus(os.path.join(currentDirectory, "efe"))
+
+    for file in c.files:
+        print(file.documents[0].getData()["title"])
