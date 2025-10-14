@@ -1,5 +1,5 @@
+from collection import Collection
 import os
-from file import File
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -7,14 +7,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 def parse_efe_corpus(dirname: str = "efe"):
     efe_path = os.path.join(current_dir, dirname)
 
-    files: list[File] = []
-    for file in os.listdir(efe_path):
-        if file.endswith(".sgml"):
-            file_path = os.path.join(efe_path, file)
-            file_obj = File(file_path)
-            files.append(file_obj)
+    collection = Collection(efe_path)
 
-    for file in files:
+    for file in collection.files:
         print(file.documents[0].getData()["title"])
 
 
