@@ -3,7 +3,17 @@ from rake_nltk import Rake
 import nltk
 import re
 
-nltk.download("stopwords")
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except LookupError:
+    print("Downloading punkt_tab...")
+    nltk.download("punkt_tab", quiet=True)
+
+try:
+    nltk.data.find("corpora/stopwords")
+except LookupError:
+    print("Downloading stopwords...")
+    nltk.download("stopwords", quiet=True)
 
 
 class Document:
