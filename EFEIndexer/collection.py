@@ -14,18 +14,18 @@ class Collection:
         # Skip documentID as it is the same as documentNumber
         documentID=fields.STORED(),
         datetime=fields.DATETIME(stored=True),
-        subCategory=fields.KEYWORD(stored=True),
-        files=fields.ID(stored=True),
-        destination=fields.KEYWORD(stored=True),
-        category=fields.KEYWORD(stored=True),
-        key=fields.ID(stored=True),
-        number=fields.ID(stored=True),
-        priority=fields.ID(stored=True),
-        title=fields.TEXT(stored=True),
-        text=fields.TEXT(stored=True),
+        subCategory=fields.KEYWORD(stored=True),  # This is an abbreviation of category
+        files=fields.ID(stored=True),  # Not needed
+        destination=fields.KEYWORD(stored=True),  # Not compulsory
+        category=fields.KEYWORD(stored=True),  # Compulsory
+        key=fields.ID(stored=True),  # Not needed
+        number=fields.ID(stored=True),  # Not needed
+        priority=fields.ID(stored=True),  # There are only "R", "U" and some "B"
+        title=fields.TEXT(stored=True),  # Compulsory
+        text=fields.TEXT(stored=True),  # Main content
         author=fields.TEXT(stored=True),
         location=fields.TEXT(stored=True),
-        keywords=fields.KEYWORD(stored=True, commas=True),
+        keywords=fields.KEYWORD(stored=True, commas=True),  # Compulsory
     )
 
     def __init__(self, inputFolder: str) -> None:
