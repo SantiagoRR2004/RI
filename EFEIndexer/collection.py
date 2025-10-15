@@ -89,3 +89,23 @@ class Collection:
                 data = document.getData()
                 writer.add_document(**data)
         writer.commit()
+
+    def addToIndex(self, indexpath: str) -> None:
+        """
+        Add documents to an existing index.
+
+        Args:
+            - indexpath (str): The path to the existing index
+
+        Returns:
+            - None
+        """
+        if not os.path.exists(indexpath):
+            raise ValueError(f"Index path {indexpath} does not exist.")
+        ix = index.open_dir(indexpath)
+        writer = ix.writer()
+        for file in self.files:
+            for document in file.documents:
+                data = document.getData()
+                writer.add_document(**data)
+        writer.commit()

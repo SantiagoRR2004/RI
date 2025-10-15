@@ -17,6 +17,11 @@ def create(dirpath: str, indexpath: str) -> None:
         collection.createIndex(indexpath)
 
 
+def add(dirpath: str, indexpath: str) -> None:
+    collection = parse_efe_corpus(dirpath)
+    collection.addToIndex(indexpath)
+
+
 def stats(indexpath: str) -> None:
     print(f"Showing statistics for index at {indexpath}")
     im = IndexManager(indexpath)
@@ -65,7 +70,7 @@ if __name__ == "__main__":
         create(args.documents, args.path)
 
     elif args.add:
-        print(f"Adding documents {args.documents} to index at {args.path}")
+        add(args.documents, args.path)
 
     elif args.stats:
         stats(args.path)
