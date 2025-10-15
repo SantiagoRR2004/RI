@@ -1,5 +1,6 @@
 from whoosh import fields
 from whoosh import index
+from whoosh import analysis
 from file import File
 import os
 
@@ -9,6 +10,7 @@ class Collection:
     Class representing a collection of documents.
     """
 
+    text_analyzer = analysis.StandardAnalyzer()
     schema = fields.Schema(
         documentNumber=fields.ID(stored=True, unique=True),
         # Skip documentID as it is the same as documentNumber
@@ -17,15 +19,17 @@ class Collection:
         subCategory=fields.KEYWORD(stored=True),  # This is an abbreviation of category
         files=fields.ID(stored=True),  # Not needed
         destination=fields.KEYWORD(stored=True),  # Not compulsory
-        category=fields.KEYWORD(stored=True),  # Compulsory
+        category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
         key=fields.ID(stored=True),  # Not needed
         number=fields.ID(stored=True),  # Not needed
         priority=fields.ID(stored=True),  # There are only "R", "U" and some "B"
-        title=fields.TEXT(stored=True),  # Compulsory
-        text=fields.TEXT(stored=True),  # Main content
-        author=fields.TEXT(stored=True),
+        title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
+        text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
+        author=fields.TEXT(stored=True, analyzer=text_analyzer),  # Not compulsory
         location=fields.TEXT(stored=True),
-        keywords=fields.KEYWORD(stored=True, commas=True),  # Compulsory
+        keywords=fields.KEYWORD(
+            stored=True, commas=True
+        ),  # Compulsory #TODO from list to string
     )
 
     def __init__(self, inputFolder: str) -> None:
