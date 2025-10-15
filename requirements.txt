@@ -6,3 +6,5 @@ nbstripout
 Whoosh
 rake-nltk
 matplotlib
+tqdm
+multiprocessing

@@ -2,7 +2,16 @@ from document import Document
 
 
 class File:
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
+        """
+        Initialize File object.
+
+        Args:
+            - path (str): The path to the file
+
+        Returns:
+            - None
+        """
         self.path = path
         self.content = self._read_file()
         self.documents: list[Document] = self._parse_documents()

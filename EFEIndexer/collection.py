@@ -1,7 +1,9 @@
+from concurrent.futures import ProcessPoolExecutor
 from whoosh import fields
 from whoosh import index
 from whoosh import analysis
 from file import File
+import tqdm
 import os
 
 
@@ -69,10 +71,19 @@ class Collection:
             - None
         """
         self.files: list[File] = []
-        for file in os.listdir(self.inputFolder):
-            if file.endswith(".sgml"):
+        futures = []
+
+        sgmlFiles = [
+            file for file in os.listdir(self.inputFolder) if file.endswith(".sgml")
+        ]
+
+        with ProcessPoolExecutor() as executor:
+            for file in sgmlFiles:
                 filePath = os.path.join(self.inputFolder, file)
-                self.files.append(File(filePath))
+                futures.append(executor.submit(File, filePath))
+
+        for future in futures:
+            self.files.append(future.result())
 
     def createIndex(self, indexpath: str) -> None:
         """
@@ -88,10 +99,13 @@ class Collection:
             os.mkdir(indexpath)
         ix = index.create_in(indexpath, self.schema)
         writer = ix.writer()
-        for file in self.files:
-            for document in file.documents:
-                data = document.getData()
-                writer.add_document(**data)
+
+        documents = [document for file in self.files for document in file.documents]
+
+        for document in tqdm.tqdm(documents, desc="Adding documents to index"):
+            data = document.getData()
+            writer.add_document(**data)
+
         writer.commit()
 
     def addToIndex(self, indexpath: str) -> None:
@@ -108,8 +122,9 @@ class Collection:
             raise ValueError(f"Index path {indexpath} does not exist.")
         ix = index.open_dir(indexpath)
         writer = ix.writer()
-        for file in self.files:
-            for document in file.documents:
-                data = document.getData()
-                writer.add_document(**data)
+        documents = [document for file in self.files for document in file.documents]
+        for document in tqdm.tqdm(documents, desc="Adding documents to index"):
+            data = document.getData()
+            writer.add_document(**data)
+
         writer.commit()
