@@ -32,6 +32,7 @@ class IndexManager:
             - None
         """
         self.showTimeOfDay()
+        self.showKeywords()
         plt.show()
 
     def showTimeOfDay(self) -> None:
@@ -68,3 +69,100 @@ class IndexManager:
         ax.set_xticklabels([f"{int(h)}:00" for h in range(24)])
         ax.set_title("Distribution of Time of Day", va="bottom")
         ax.set_yticks([])
+
+    def showKeywords(self) -> None:
+        """
+        Show all the keywords in the index.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        keywords = {}
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                for kw in doc.get("keywords", []):
+                    if kw in keywords:
+                        keywords[kw] += 1
+                    else:
+                        keywords[kw] = 1
+
+        sortedKeywords = sorted(keywords.items(), key=lambda x: x[1], reverse=True)
+
+        # Plot keywords
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            [i for i in range(len(sortedKeywords))],
+            [freq for kw, freq in sortedKeywords],
+            color="blue",
+        )
+        plt.xlabel("Keywords")
+        plt.ylabel("Frequency")
+        plt.title("Keyword Frequency Distribution")
+
+        # Eliminate the x-axis labels and ticks
+        plt.xticks([])
+
+        # Show top, middle (25%), and bottom keywords
+        numberEach = 5
+        n = len(sortedKeywords)
+
+        # Create indices for each section
+        topIndices = list(range(numberEach))
+        middleIndices = [int(n // 4 - i) for i in range(numberEach, 0, -1)]
+        bottomIndices = [n - i - 1 for i in range(numberEach)]
+
+        # Create a figure with 3 subplots
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+
+        # Top keywords
+        ax1.bar(
+            [sortedKeywords[i][0] for i in topIndices],
+            [sortedKeywords[i][1] for i in topIndices],
+            color="blue",
+        )
+        ax1.set_xlabel("Keywords")
+        ax1.set_ylabel("Frequency")
+        ax1.set_title("Top Keywords")
+        ax1.tick_params(axis="x", rotation=45)
+
+        # Middle keywords
+        ax2.bar(
+            [sortedKeywords[i][0] for i in middleIndices],
+            [sortedKeywords[i][1] for i in middleIndices],
+            color="green",
+        )
+        ax2.set_xlabel("Keywords")
+        ax2.set_ylabel("Frequency")
+        ax2.set_title("Middle Keywords (around 25%)")
+        ax2.tick_params(axis="x", rotation=45)
+
+        # Bottom keywords
+        ax3.bar(
+            [sortedKeywords[i][0] for i in bottomIndices],
+            [sortedKeywords[i][1] for i in bottomIndices],
+            color="red",
+        )
+        ax3.set_xlabel("Keywords")
+        ax3.set_ylabel("Frequency")
+        ax3.set_title("Bottom Keywords")
+        ax3.tick_params(axis="x", rotation=45)
+
+        plt.tight_layout()
+
+        # Top 20 keywords
+        plt.figure(figsize=(16, 4))
+        topN = 20
+        plt.bar(
+            [sortedKeywords[i][0] for i in range(topN)],
+            [sortedKeywords[i][1] for i in range(topN)],
+            color="blue",
+        )
+        plt.xlabel("Keywords")
+        plt.ylabel("Frequency")
+        plt.title(f"Top {topN} Keywords")
