@@ -7,6 +7,20 @@ import tqdm
 import os
 
 
+class NOTHING(fields.FieldType):
+    """
+    Configured field type for fields you want do not want to index or store.
+
+    This is necessary because we use dictionary unpacking to add documents
+    """
+
+    indexed = False
+    stored = False
+
+    def __init__(self):
+        pass
+
+
 class Collection:
     """
     Class representing a collection of documents.
@@ -16,7 +30,7 @@ class Collection:
     schema = fields.Schema(
         documentNumber=fields.ID(stored=True, unique=True),
         # Skip documentID as it is the same as documentNumber
-        documentID=fields.STORED(),
+        documentID=NOTHING(),
         datetime=fields.DATETIME(stored=True),
         subCategory=fields.KEYWORD(stored=True),  # This is an abbreviation of category
         files=fields.ID(stored=True),  # Not needed
