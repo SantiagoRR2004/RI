@@ -7,4 +7,6 @@ Whoosh
 rake-nltk
 matplotlib
 tqdm
-multiprocessing
+requests
+beautifulsoup4
+wikipedia-api
