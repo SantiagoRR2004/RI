@@ -1,0 +1,8 @@
+ipykernel
+nbstripout
+rake-nltk
+matplotlib
+tqdm
+requests
+beautifulsoup4
+wikipedia-api

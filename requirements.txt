@@ -1,12 +1,7 @@
 black
-ipykernel
-pandas
-numpy
 nbstripout
-Whoosh
-rake-nltk
-matplotlib
-tqdm
-requests
-beautifulsoup4
-wikipedia-api
+-r ./EFEIndexer/requirements.txt
+-r ./Prácticas/P1_Modelos_de_representacion/P1_1/requirements.txt
+-r ./Prácticas/P2_Whoosh/p2_1/requirements.txt
+-r ./Prácticas/P3/requirements.txt
+-r ./Prácticas/P4/requirements.txt

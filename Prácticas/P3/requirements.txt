@@ -1,0 +1,3 @@
+ipykernel
+nbstripout
+Whoosh

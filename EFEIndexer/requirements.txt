@@ -1,0 +1,5 @@
+numpy
+Whoosh
+rake-nltk
+matplotlib
+tqdm

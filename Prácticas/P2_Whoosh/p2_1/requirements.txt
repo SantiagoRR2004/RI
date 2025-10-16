@@ -1,0 +1,4 @@
+ipykernel
+nbstripout
+Whoosh
+matplotlib
