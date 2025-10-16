@@ -34,6 +34,7 @@ class IndexManager:
             - None
         """
         self.showDateTime()
+        self.showCategory()
         self.showKeywords()
         plt.show()
 
@@ -82,6 +83,49 @@ class IndexManager:
         plt.xlabel("Date")
         plt.ylabel("Number of Documents")
         plt.title("Distribution of Documents Over Time")
+
+    def showCategory(self) -> None:
+        """
+        Show all the categories in the index.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        categories = {}
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                cat = doc.get("category", "")
+                if cat in categories:
+                    categories[cat] += 1
+                else:
+                    categories[cat] = 1
+
+        # Need to sort categories by frequency
+        categories = dict(sorted(categories.items(), key=lambda x: x[1], reverse=True))
+
+        def autopct_big_only(pct):
+            # Show percentage only if it's above 5%
+            return f"{pct:.1f}%" if pct > 5 else ""
+
+        # Plot categories
+        plt.figure(figsize=(9, 7))
+        # No labels on the pie chart
+        wedges, _, _ = plt.pie(
+            [freq for freq in categories.values()], autopct=autopct_big_only
+        )
+        plt.title("Category Frequency")
+        plt.legend(
+            wedges,
+            [cat for cat in categories.keys()],
+            loc="center left",
+            bbox_to_anchor=(-0.3, 0.5),
+        )
 
     def showKeywords(self) -> None:
         """
