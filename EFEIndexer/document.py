@@ -312,8 +312,6 @@ class Document:
         """
         Set the document keywords.
 
-        TODO: Implement keyword extraction.
-
         Args:
             - None
 
@@ -329,7 +327,14 @@ class Document:
         # Keep only the ones with one word
         keywords = [kw for kw in keywords if len(kw.split()) == 1]
 
-        self.keywords = keywords[:3]
+        finalKeywords = set()
+
+        while len(finalKeywords) < 3 and keywords:
+            k = keywords.pop(0)
+            if not k.isdigit():
+                finalKeywords.add(k)
+
+        self.keywords = list(finalKeywords)
 
     def getData(self) -> dict:
         """
