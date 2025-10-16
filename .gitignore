@@ -2,6 +2,12 @@
 index_schema*/
 indexdir*/
 
+# Other things
+**/P4/frecuencias.txt
+
+# Pickle files
+*.pickle
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
