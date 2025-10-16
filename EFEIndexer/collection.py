@@ -32,13 +32,13 @@ class Collection:
         # Skip documentID as it is the same as documentNumber
         documentID=NOTHING(),
         datetime=fields.DATETIME(stored=True),
-        subCategory=fields.KEYWORD(stored=True),  # This is an abbreviation of category
-        files=fields.ID(stored=True),  # Not needed
-        destination=fields.KEYWORD(stored=True),  # Not compulsory
+        subCategory=NOTHING(),  # This is an abbreviation of category
+        files=NOTHING(),  # Not needed
+        destination=NOTHING(),  # Not compulsory
         category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
-        key=fields.ID(stored=True),  # Not needed
-        number=fields.ID(stored=True),  # Not needed
-        priority=fields.ID(stored=True),  # There are only "R", "U" and some "B"
+        key=NOTHING(),  # Not needed
+        number=NOTHING(),  # Not needed
+        priority=NOTHING(),  # There are only "R", "U" and some "B"
         title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
         text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
         author=fields.TEXT(stored=True, analyzer=text_analyzer),  # Not compulsory
