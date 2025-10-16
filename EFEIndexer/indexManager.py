@@ -1,6 +1,8 @@
+from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 from whoosh import index
 import numpy as np
+import datetime
 
 
 class IndexManager:
@@ -31,13 +33,14 @@ class IndexManager:
         Returns:
             - None
         """
-        self.showTimeOfDay()
+        self.showDateTime()
         self.showKeywords()
         plt.show()
 
-    def showTimeOfDay(self) -> None:
+    def showDateTime(self) -> None:
         """
-        Show distribution of documents by time of day.
+        Show distribution of documents by time of day
+        and by date.
 
         Args:
             - None
@@ -46,13 +49,15 @@ class IndexManager:
             - None
         """
         times = []
+        dates = []
 
         with self.idx.searcher() as searcher:
             # Iterate over all documents in the index
             for docnum in range(searcher.doc_count()):
                 doc = searcher.stored_fields(docnum)
-                dtValue = doc.get("datetime")
+                dtValue: datetime.datetime = doc.get("datetime")
                 times.append(dtValue.hour + dtValue.minute / 60)
+                dates.append(dtValue.date())
 
         angles = (np.array(times) / 24) * 2 * np.pi
 
@@ -69,6 +74,14 @@ class IndexManager:
         ax.set_xticklabels([f"{int(h)}:00" for h in range(24)])
         ax.set_title("Distribution of Time of Day", va="bottom")
         ax.set_yticks([])
+
+        # Show the date graph
+        plt.figure(figsize=(10, 4))
+        uniqueDates, counts = np.unique(dates, return_counts=True)
+        plt.plot(uniqueDates, counts, color="blue")
+        plt.xlabel("Date")
+        plt.ylabel("Number of Documents")
+        plt.title("Distribution of Documents Over Time")
 
     def showKeywords(self) -> None:
         """
@@ -141,6 +154,7 @@ class IndexManager:
         ax2.set_ylabel("Frequency")
         ax2.set_title("Middle Keywords (around 25%)")
         ax2.tick_params(axis="x", rotation=45)
+        ax2.yaxis.set_major_locator(MaxNLocator(integer=True))
 
         # Bottom keywords
         ax3.bar(
@@ -152,6 +166,7 @@ class IndexManager:
         ax3.set_ylabel("Frequency")
         ax3.set_title("Bottom Keywords")
         ax3.tick_params(axis="x", rotation=45)
+        ax3.yaxis.set_major_locator(MaxNLocator(integer=True))
 
         plt.tight_layout()
 
@@ -166,3 +181,4 @@ class IndexManager:
         plt.xlabel("Keywords")
         plt.ylabel("Frequency")
         plt.title(f"Top {topN} Keywords")
+        plt.xticks(rotation=45)
