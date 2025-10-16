@@ -26,7 +26,7 @@ class Collection:
     Class representing a collection of documents.
     """
 
-    text_analyzer = analysis.StandardAnalyzer()
+    text_analyzer = analysis.SimpleAnalyzer()
     schema = fields.Schema(
         documentNumber=fields.ID(stored=True, unique=True),
         # Skip documentID as it is the same as documentNumber
@@ -34,18 +34,18 @@ class Collection:
         datetime=fields.DATETIME(stored=True),
         subCategory=NOTHING(),  # This is an abbreviation of category
         files=NOTHING(),  # Not needed
-        destination=NOTHING(),  # Not compulsory
+        destination=NOTHING(),  # Not compulsory, it is the abbreviation of location where the notice is read.
         category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
         key=NOTHING(),  # Not needed
         number=NOTHING(),  # Not needed
         priority=NOTHING(),  # There are only "R", "U" and some "B"
         title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
         text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
-        author=fields.TEXT(stored=True, analyzer=text_analyzer),  # Not compulsory
+        author=fields.KEYWORD(
+            stored=True, analyzer=text_analyzer, commas=False
+        ),  # Not compulsory
         location=fields.TEXT(stored=True),
-        keywords=fields.KEYWORD(
-            stored=True, commas=True
-        ),  # Compulsory #TODO from list to string
+        keywords=fields.KEYWORD(stored=True, commas=True),  # Compulsory
     )
 
     def __init__(self, inputFolder: str) -> None:

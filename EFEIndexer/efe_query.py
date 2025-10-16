@@ -4,11 +4,24 @@ from whoosh import index
 from whoosh.index import FileIndex
 from whoosh.searching import Searcher
 from whoosh.qparser import MultifieldParser
-from whoosh.query import And, Or, Term, DateRange
+from whoosh.query import And, Or, Term, DateRange, Phrase
 from datetime import datetime
+from whoosh import analysis
 
 
 LIMIT = 5
+"""
+schema = fields.Schema(
+        documentNumber=fields.ID(stored=True, unique=True),
+        datetime=fields.DATETIME(stored=True),
+        category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
+        title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
+        text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
+        author=fields.TEXT(stored=True, analyzer=text_analyzer), 
+        location=fields.TEXT(stored=True),
+        keywords=fields.KEYWORD(stored=True, commas=True),  # Compulsory
+    )
+"""
 
 
 def search(
@@ -16,7 +29,9 @@ def search(
     query_text: str,
     fields: List[str],
     categories: List[str] | None = None,
-    keyword: str | None = None,
+    keyword: List[str] | None = None,
+    location: List[str] | None = None,
+    author: List[str] | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
 ):
@@ -25,10 +40,20 @@ def search(
         query = parser.parse(query_text)
 
         filters = []
+        # https://whoosh.readthedocs.io/en/latest/api/query.html#query-classes
+        # we can change Term for FuzzyTerm if we want to allow some mistakes
         if categories:
             filters.append(Or([Term("category", category) for category in categories]))
         if keyword:
-            filters.append(Term("keywords", keyword))
+            filters.append(Or([Term("keywords", k) for k in keyword]))
+        if location:
+            filters.append(Or([Term("location", loc) for loc in location]))
+        if author:
+            author_queries = []
+            for auth in author:
+                tokens = auth.split()
+                author_queries.append(And([Term("author", t) for t in tokens]))
+            filters.append(Or(author_queries))
         if date_from or date_to:
             filters.append(DateRange("datetime", date_from, date_to))
 
@@ -45,6 +70,8 @@ def search(
             print(f"    Document: {result['documentNumber']}")
             print(f"    Date: {result['datetime']}")
             print(f"    Category: {result.get('category', 'N/A')}")
+            print(f"    Author: {result.get('author', 'N/A')}")
+            print(f"    Location: {result.get('location', 'N/A')}")
             print(f"    Text: {result['text'][:200]}...")
             print()
 
@@ -76,21 +103,37 @@ def main():
                 print("Query cannot be empty")
                 continue
 
+            print(
+                "\nFields to search or filter by (in case of add more than one element per camp, write them separated by comma ','):\n"
+            )
             fields_input = input(
-                "Fields to search (title,text) [default: title,text]: "
+                "Fields to search (title,text,category,location,author,keywords) [default: title,text]: "
             ).strip()
             if fields_input:
                 fields = [f.strip() for f in fields_input.split(",")]
             else:
                 fields = ["title", "text"]
 
-            categories_input = input("Filter by category (optional): ").strip()
+            categories_input = input("Filter by categories (optional): ").strip()
             if categories_input:
-                categories = [c.strip() for c in categories_input.split(",")]
+                categories = [c.strip().lower() for c in categories_input.split(",")]
             else:
                 categories = None
-
-            keyword = input("Filter by keyword (optional): ").strip() or None
+            keyword = input("Filter by keywords (optional): ").strip()
+            if keyword:
+                keyword = [k.strip().lower() for k in keyword.split(",")]
+            else:
+                keyword = None
+            location_input = input("Filter by locations (optional): ").strip()
+            if location_input:
+                location = [l.strip().lower() for l in location_input.split(",")]
+            else:
+                location = None
+            author_input = input("Filter by authors (optional): ").strip()
+            if author_input:
+                author = [a.strip() for a in author_input.split(",")]
+            else:
+                author = None
 
             date_from_str = input("Date from YYYYMMDD (optional): ").strip()
             date_to_str = input("Date to YYYYMMDD (optional): ").strip()
@@ -112,7 +155,17 @@ def main():
                     print("Invalid date format")
                     continue
 
-            search(ix, query_text, fields, categories, keyword, date_from, date_to)
+            search(
+                ix,
+                query_text,
+                fields,
+                categories,
+                keyword,
+                location,
+                author,
+                date_from,
+                date_to,
+            )
 
         elif choice == "2":
             field = input("Field name (category/keywords/title/text): ").strip()

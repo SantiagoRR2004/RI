@@ -224,7 +224,12 @@ class Document:
             - None
         """
         match = re.search(r"<TITLE>(.*?)</TITLE>", self.rawText, re.DOTALL)
-        self.title = match.group(1)
+        title = match.group(1)
+        # Remove extra whitespace and newlines
+        title = re.sub(r"\s+", " ", title).strip()
+        # Remove trailing dots if they are 3 or more
+        title = re.sub(r"\.{3,}$", "", title).strip()
+        self.title = title
 
     def setText(self) -> None:
         """
