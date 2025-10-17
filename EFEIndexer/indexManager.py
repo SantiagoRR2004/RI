@@ -37,6 +37,8 @@ class IndexManager:
         self.showIDUniqueness()
         self.showDateTime()
         self.showCategory()
+        self.showTitle()
+        self.showText()
         self.showAuthor()
         self.showLocation()
         self.showKeywords()
@@ -173,6 +175,142 @@ class IndexManager:
             loc="center left",
             bbox_to_anchor=(-0.3, 0.5),
         )
+
+    def showTitle(self) -> None:
+        """
+        Show different statistics about titles in the index.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        titles = []
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                title = doc.get("title", "")
+                titles.append(title)
+
+        # Show the titles that are repeated
+        repeatedTitles = {
+            title: count for title, count in Counter(titles).items() if count > 1
+        }
+
+        # Sort by count
+        repeatedTitles = dict(
+            sorted(repeatedTitles.items(), key=lambda x: x[1], reverse=True)
+        )
+        maxLen = len(str(max(repeatedTitles.values())))
+
+        print("Repeated Titles:")
+        for title, count in repeatedTitles.items():
+            print(f"{count:>{maxLen}}\t - {title}")
+
+        # Get the list of word counts
+        wordCounts = dict(Counter([word for title in titles for word in title.split()]))
+        wordCounts = sorted(wordCounts.items(), key=lambda x: x[1], reverse=True)
+
+        # Plot the frequency
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            [i for i in range(len(wordCounts))],
+            [freq for kw, freq in wordCounts],
+            color="blue",
+        )
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.title("Words in Titles Frequency Distribution")
+        # Eliminate the x-axis labels and ticks
+        plt.xticks([])
+
+        # Sow topN words in titles
+        plt.figure(figsize=(16, 4))
+        topN = 20
+        plt.bar(
+            [wordCounts[i][0] for i in range(topN)],
+            [wordCounts[i][1] for i in range(topN)],
+            color="blue",
+        )
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.title(f"Top {topN} Words in Titles")
+        plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
+
+        # Raise the plot to make room for x labels
+        plt.subplots_adjust(bottom=0.3)
+
+    def showText(self) -> None:
+        """
+        Show statistics about the text in the index.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        texts = []
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                text = doc.get("text", "")
+                texts.append(text)
+
+        # Print if any document has repeated text
+        textCounts = Counter(texts)
+        repeatedTexts = {text: count for text, count in textCounts.items() if count > 1}
+        if repeatedTexts:
+            print("Repeated Texts:")
+            for text, count in repeatedTexts.items():
+                print(f"Count: {count}\n{text[:100]}\n{'-'*40}")
+        else:
+            print("No repeated texts found.")
+
+        # Get the list of word counts
+        wordCounts = [len(text.split()) for text in texts]
+
+        # Plot the distribution of word counts
+        plt.figure(figsize=(10, 6))
+        plt.hist(wordCounts, bins=50, color="blue", alpha=0.7)
+        plt.xlabel("Number of Words")
+        plt.ylabel("Number of Documents")
+        plt.title("Distribution of Document Lengths (in words)")
+
+        # List of repeated words
+        wordCounts = dict(Counter([word for text in texts for word in text.split()]))
+        wordCounts = sorted(wordCounts.items(), key=lambda x: x[1], reverse=True)
+
+        # Plot the frequency
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            [i for i in range(len(wordCounts))],
+            [freq for kw, freq in wordCounts],
+            color="blue",
+        )
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.title("Words in Text Frequency Distribution")
+        # Eliminate the x-axis labels and ticks
+        plt.xticks([])
+
+        # Show top N words
+        plt.figure(figsize=(16, 4))
+        topN = 20
+        plt.bar(
+            [wordCounts[i][0] for i in range(topN)],
+            [wordCounts[i][1] for i in range(topN)],
+            color="blue",
+        )
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.title(f"Top {topN} Words in Text")
+        plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
 
     def showAuthor(self) -> None:
         """
