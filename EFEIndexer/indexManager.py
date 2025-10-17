@@ -38,6 +38,7 @@ class IndexManager:
         self.showDateTime()
         self.showCategory()
         self.showAuthor()
+        self.showLocation()
         self.showKeywords()
         plt.show()
 
@@ -226,6 +227,49 @@ class IndexManager:
         plt.xlabel("Authors")
         plt.ylabel("Frequency")
         plt.title(f"Top {topN} Authors")
+        plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
+
+        # Move the plot up to make room for x labels
+        plt.subplots_adjust(bottom=0.3)
+
+    def showLocation(self) -> None:
+        """
+        Show the locations in the index
+        as a bar chart.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        locations = {}
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                location = doc.get("location", "")
+                if location in locations:
+                    locations[location] += 1
+                else:
+                    locations[location] = 1
+
+        sortedLocations = dict(
+            sorted(locations.items(), key=lambda x: x[1], reverse=True)
+        )
+
+        # Show top topN locations
+        plt.figure(figsize=(10, 4))
+        topN = 20
+        plt.bar(
+            [loc for loc in list(sortedLocations.keys())[:topN]],
+            [freq for freq in list(sortedLocations.values())[:topN]],
+            color="blue",
+        )
+        plt.xlabel("Locations")
+        plt.ylabel("Frequency")
+        plt.title(f"Top {topN} Locations")
         plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
 
         # Move the plot up to make room for x labels
