@@ -1,5 +1,6 @@
 from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
+from collections import Counter
 from whoosh import index
 import numpy as np
 import datetime
@@ -33,10 +34,58 @@ class IndexManager:
         Returns:
             - None
         """
+        self.showIDUniqueness()
         self.showDateTime()
         self.showCategory()
+        self.showAuthor()
         self.showKeywords()
         plt.show()
+
+    @staticmethod
+    def autopct_big_only(pct: float) -> str:
+        # Show percentage only if it's above 5%
+        return f"{pct:.1f}%" if pct > 5 else ""
+
+    def showIDUniqueness(self) -> None:
+        """
+        Show if all document IDs are unique
+        with a bar chart.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        ids = []
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                ids.append(doc.get("id", ""))
+
+        # Count how many times each ID appears
+        idCounts = Counter(ids)
+
+        # Count how many times each ID count appears
+        repetitions = Counter(idCounts.values())
+
+        y = sorted(repetitions.keys())
+        x = [repetitions[k] for k in y]
+
+        # Plot results
+        plt.figure(figsize=(6, 4))
+        plt.bar(
+            x,
+            y,
+        )
+        plt.title("Distribution of ID Repetitions")
+        plt.ylabel("Number of IDs")
+        plt.xlabel("Number of times an ID appears")
+
+        # No decimals on x-axis
+        plt.xticks(x)
 
     def showDateTime(self) -> None:
         """
@@ -109,15 +158,12 @@ class IndexManager:
         # Need to sort categories by frequency
         categories = dict(sorted(categories.items(), key=lambda x: x[1], reverse=True))
 
-        def autopct_big_only(pct):
-            # Show percentage only if it's above 5%
-            return f"{pct:.1f}%" if pct > 5 else ""
-
         # Plot categories
         plt.figure(figsize=(9, 7))
         # No labels on the pie chart
         wedges, _, _ = plt.pie(
-            [freq for freq in categories.values()], autopct=autopct_big_only
+            [freq for freq in categories.values()],
+            autopct=IndexManager.autopct_big_only,
         )
         plt.title("Category Frequency")
         plt.legend(
@@ -126,6 +172,64 @@ class IndexManager:
             loc="center left",
             bbox_to_anchor=(-0.3, 0.5),
         )
+
+    def showAuthor(self) -> None:
+        """
+        Show the authors in the index
+        as a pie chart.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        authors = {}
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                author = doc.get("author", "")
+                if author in authors:
+                    authors[author] += 1
+                else:
+                    authors[author] = 1
+
+        sortedAuthors = dict(sorted(authors.items(), key=lambda x: x[1], reverse=True))
+
+        # Plot authors
+        plt.figure(figsize=(9, 7))
+        # No labels on the pie chart
+        wedges, _, _ = plt.pie(
+            [freq for freq in sortedAuthors.values()],
+            autopct=IndexManager.autopct_big_only,
+        )
+        plt.title("Author Frequency")
+        plt.legend(
+            wedges,
+            [author for author in sortedAuthors.keys()],
+            loc="center left",
+            bbox_to_anchor=(-0.3, 0.5),
+        )
+
+        # Show top topN authors without "" (author unknown)
+        del sortedAuthors[""]
+
+        plt.figure(figsize=(10, 4))
+        topN = 20
+        plt.bar(
+            [author for author in list(sortedAuthors.keys())[:topN]],
+            [freq for freq in list(sortedAuthors.values())[:topN]],
+            color="blue",
+        )
+        plt.xlabel("Authors")
+        plt.ylabel("Frequency")
+        plt.title(f"Top {topN} Authors")
+        plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
+
+        # Move the plot up to make room for x labels
+        plt.subplots_adjust(bottom=0.3)
 
     def showKeywords(self) -> None:
         """
