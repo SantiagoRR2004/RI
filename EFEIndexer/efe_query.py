@@ -92,9 +92,7 @@ def main():
     while True:
         print("\nOptions:")
         print("1. Search")
-        print("2. Show top terms")
-        print("3. Exit")
-
+        print("2. Exit")
         choice = input("\nSelect option: ").strip()
 
         if choice == "1":
@@ -168,15 +166,6 @@ def main():
             )
 
         elif choice == "2":
-            field = input("Field name (category/keywords/title/text): ").strip()
-            if not field:
-                print("Field cannot be empty")
-                continue
-
-            limit_input = input("Number of top terms [default: 10]: ").strip()
-            limit = int(limit_input) if limit_input else 10
-
-        elif choice == "3":
             print("Exiting...")
             break
 
