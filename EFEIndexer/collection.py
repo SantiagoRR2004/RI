@@ -39,9 +39,15 @@ class Collection:
         key=NOTHING(),  # Not needed
         number=NOTHING(),  # Not needed
         priority=NOTHING(),  # There are only "R", "U" and some "B"
-        title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
-        subtitle=fields.TEXT(stored=True, analyzer=text_analyzer),  # The same as title
-        text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
+        title=fields.TEXT(
+            stored=True, analyzer=analysis.StandardAnalyzer()
+        ),  # Compulsory
+        subtitle=fields.TEXT(
+            stored=True, analyzer=analysis.StandardAnalyzer()
+        ),  # The same as title
+        text=fields.TEXT(
+            stored=True, analyzer=analysis.StandardAnalyzer()
+        ),  # Main content
         author=fields.KEYWORD(
             stored=True, analyzer=text_analyzer, commas=False
         ),  # Not compulsory
