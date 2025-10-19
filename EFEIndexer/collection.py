@@ -40,6 +40,7 @@ class Collection:
         number=NOTHING(),  # Not needed
         priority=NOTHING(),  # There are only "R", "U" and some "B"
         title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
+        subtitle=fields.TEXT(stored=True, analyzer=text_analyzer),  # The same as title
         text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
         author=fields.KEYWORD(
             stored=True, analyzer=text_analyzer, commas=False

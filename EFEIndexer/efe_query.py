@@ -16,6 +16,7 @@ schema = fields.Schema(
         datetime=fields.DATETIME(stored=True),
         category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
         title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
+        subtitle=fields.TEXT(stored=True, analyzer=text_analyzer),  # The same as title
         text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
         author=fields.TEXT(stored=True, analyzer=text_analyzer), 
         location=fields.TEXT(stored=True),
@@ -67,6 +68,9 @@ def search(
 
         for i, result in enumerate(results[:LIMIT], 1):
             print(f"[{i}] {result['title']}")
+            subtitle = result.get("subtitle", "")
+            if subtitle:
+                print(f"    Subtitle: {subtitle}")
             print(f"    Document: {result['documentNumber']}")
             print(f"    Date: {result['datetime']}")
             print(f"    Category: {result.get('category', 'N/A')}")
@@ -105,12 +109,12 @@ def main():
                 "\nFields to search or filter by (in case of add more than one element per camp, write them separated by comma ','):\n"
             )
             fields_input = input(
-                "Fields to search (title,text,category,location,author,keywords) [default: title,text]: "
+                "Fields to search (title,subtitle,text,category,location,author,keywords) [default: title,subtitle,text]: "
             ).strip()
             if fields_input:
                 fields = [f.strip() for f in fields_input.split(",")]
             else:
-                fields = ["title", "text"]
+                fields = ["title", "subtitle", "text"]
 
             categories_input = input("Filter by categories (optional): ").strip()
             if categories_input:

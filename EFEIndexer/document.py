@@ -57,7 +57,7 @@ class Document:
         self.setKey()
         self.setNumber()
         self.setPriority()
-        self.setTitle()
+        self.setTitleAndSubtitle()
         self.setText()
         self.setAuthor()
         self.setLocation()
@@ -213,9 +213,12 @@ class Document:
         match = re.search(r"<PRIORIDAD>(.*?)</PRIORIDAD>", self.rawText)
         self.priority = match.group(1)
 
-    def setTitle(self) -> None:
+    def setTitleAndSubtitle(self) -> None:
         """
-        Set the document title.
+        Set the document title and subtitle.
+
+        If the title contains two lines separated by whitespace,
+        the first line is treated as the title and the second as the subtitle.
 
         Args:
             - None
@@ -224,12 +227,24 @@ class Document:
             - None
         """
         match = re.search(r"<TITLE>(.*?)</TITLE>", self.rawText, re.DOTALL)
-        title = match.group(1)
-        # Remove extra whitespace and newlines
-        title = re.sub(r"\s+", " ", title).strip()
+        titleContent = match.group(1)
+
         # Remove trailing dots if they are 3 or more
-        title = re.sub(r"\.{3,}$", "", title).strip()
-        self.title = title
+        titleContent = re.sub(r"\.{3,}$", "", titleContent).strip()
+
+        # Split by newlines to check if there are multiple lines
+        lines = [line.strip() for line in titleContent.split("\n") if line.strip()]
+
+        if len(lines) >= 2:
+            # First line is the title, second line is the subtitle
+            self.title = lines[0]
+            subtitle = lines[1]
+            self.subtitle = subtitle
+        else:
+            # Single line - just set the title
+            title = re.sub(r"\s+", " ", titleContent).strip()
+            self.title = title
+            self.subtitle = None
 
     def setText(self) -> None:
         """
@@ -363,6 +378,7 @@ class Document:
             "number": self.number,
             "priority": self.priority,
             "title": self.title,
+            "subtitle": self.subtitle,
             "text": self.text,
             "author": self.author,
             "location": self.location,

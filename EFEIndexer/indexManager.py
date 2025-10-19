@@ -38,6 +38,7 @@ class IndexManager:
         self.showDateTime()
         self.showCategory()
         self.showTitle()
+        self.showSubtitle()
         self.showText()
         self.showAuthor()
         self.showLocation()
@@ -238,6 +239,80 @@ class IndexManager:
         plt.xlabel("Words")
         plt.ylabel("Frequency")
         plt.title(f"Top {topN} Words in Titles")
+        plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
+
+        # Raise the plot to make room for x labels
+        plt.subplots_adjust(bottom=0.3)
+
+    def showSubtitle(self) -> None:
+        """
+        Show different statistics about subtitles in the index.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        subtitles = []
+
+        with self.idx.searcher() as searcher:
+            # Iterate over all documents in the index
+            for docnum in range(searcher.doc_count()):
+                doc = searcher.stored_fields(docnum)
+                subtitle = doc.get("subtitle", "")
+                subtitles.append(subtitle)
+
+        # Remove empty subtitles
+        subtitles = [subtitle for subtitle in subtitles if subtitle]
+
+        # Show the subtitles that are repeated
+        repeatedSubtitles = {
+            subtitle: count
+            for subtitle, count in Counter(subtitles).items()
+            if count > 1
+        }
+
+        # Sort by count
+        repeatedSubtitles = dict(
+            sorted(repeatedSubtitles.items(), key=lambda x: x[1], reverse=True)
+        )
+        maxLen = len(str(max(repeatedSubtitles.values())))
+
+        print("Repeated Subtitles:")
+        for subtitle, count in repeatedSubtitles.items():
+            print(f"{count:>{maxLen}}\t - {subtitle}")
+
+        # Get the list of word counts
+        wordCounts = dict(
+            Counter([word for subtitle in subtitles for word in subtitle.split()])
+        )
+        wordCounts = sorted(wordCounts.items(), key=lambda x: x[1], reverse=True)
+
+        # Plot the frequency
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            [i for i in range(len(wordCounts))],
+            [freq for kw, freq in wordCounts],
+            color="blue",
+        )
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.title("Words in Subtitles Frequency Distribution")
+        # Eliminate the x-axis labels and ticks
+        plt.xticks([])
+
+        # Show topN words in subtitles
+        plt.figure(figsize=(16, 4))
+        topN = 20
+        plt.bar(
+            [wordCounts[i][0] for i in range(topN)],
+            [wordCounts[i][1] for i in range(topN)],
+            color="blue",
+        )
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.title(f"Top {topN} Words in Subtitles")
         plt.xticks(rotation=45, ha="right", rotation_mode="anchor")
 
         # Raise the plot to make room for x labels

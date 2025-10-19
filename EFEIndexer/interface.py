@@ -10,7 +10,7 @@ import efe_query
 
 
 class EFEQueryUI:
-    DEFAULT_FIELDS = ["title", "text"]
+    DEFAULT_FIELDS = ["title", "subtitle", "text"]
 
     def __init__(self) -> None:
         """
@@ -161,7 +161,7 @@ class EFEQueryUI:
         """
         Create checkboxes for selecting which fields to search in.
 
-        Default fields are 'title' and 'text'.
+        Default fields are 'title', 'subtitle', and 'text'.
 
         Args:
             - None
@@ -176,13 +176,23 @@ class EFEQueryUI:
         fieldsFrame = tk.Frame(self.window)
         fieldsFrame.grid(row=r, column=1, columnspan=2, padx=8, pady=8, sticky="w")
         self.fieldVars = {}
-        for i, field in enumerate(
-            ["title", "text", "category", "location", "author", "keywords"]
-        ):
+        fields = [
+            "title",
+            "subtitle",
+            "text",
+            "category",
+            "location",
+            "author",
+            "keywords",
+        ]
+        # Split into two rows for better visibility
+        for i, field in enumerate(fields):
             var = tk.BooleanVar(value=(field in self.DEFAULT_FIELDS))
             self.fieldVars[field] = var
+            row = 0 if i < 4 else 1
+            col = i if i < 4 else i - 4
             cb = tk.Checkbutton(fieldsFrame, text=field, variable=var)
-            cb.grid(row=0, column=i, padx=(0, 12), sticky="w")
+            cb.grid(row=row, column=col, padx=(0, 12), sticky="w")
 
     def createCategories(self) -> None:
         """
@@ -283,7 +293,7 @@ class EFEQueryUI:
         tk.Entry(self.window, textvariable=self.dateToVar, width=20).grid(
             row=r, column=2, padx=8, pady=4, sticky="e"
         )
-        tk.Label(self.window, text="Date to (YYYYMMDD):").grid(
+        tk.Label(self.window, text="Date to (YYYYMMDD)").grid(
             row=r, column=3, padx=8, pady=4, sticky="w"
         )
 
