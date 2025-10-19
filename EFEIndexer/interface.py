@@ -45,6 +45,7 @@ class EFEQueryUI:
         currentDir = os.path.dirname(os.path.abspath(__file__))
         self.indexDir = os.path.join(currentDir, "indexdir")
         self.topResults = getattr(efe_query, "LIMIT", 5)
+        self.row = 0
 
     def createWindow(self) -> None:
         """
@@ -68,6 +69,25 @@ class EFEQueryUI:
         self.window.grid_columnconfigure(0, weight=0)
         self.window.grid_columnconfigure(1, weight=1)
         self.window.grid_columnconfigure(2, weight=0)
+        # Extra column for trailing 'to' label next to its entry
+        self.window.grid_columnconfigure(3, weight=0)
+
+    def getRow(self) -> int:
+        """
+        Return the next available grid row and increment the counter.
+
+        This helps keep row assignments consistent without hardcoding
+        numbers across widget creation methods.
+
+        Args:
+            - None
+
+        Returns:
+            - The next row index as an int.
+        """
+        r = self.row
+        self.row += 1
+        return r
 
     def createWidgets(self) -> None:
         """
@@ -105,7 +125,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 0
+        r = self.getRow()
         tk.Label(self.window, text="Index directory:").grid(
             row=r, column=0, padx=8, pady=8, sticky="w"
         )
@@ -128,7 +148,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 1
+        r = self.getRow()
         tk.Label(self.window, text="Query:").grid(
             row=r, column=0, padx=8, pady=8, sticky="w"
         )
@@ -149,7 +169,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 2
+        r = self.getRow()
         tk.Label(self.window, text="Search fields:").grid(
             row=r, column=0, padx=8, pady=8, sticky="nw"
         )
@@ -174,7 +194,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 3
+        r = self.getRow()
         tk.Label(self.window, text="Categories (comma-separated):").grid(
             row=r, column=0, padx=8, pady=4, sticky="w"
         )
@@ -193,7 +213,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 4
+        r = self.getRow()
         tk.Label(self.window, text="Keywords (comma-separated):").grid(
             row=r, column=0, padx=8, pady=4, sticky="w"
         )
@@ -212,7 +232,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 5
+        r = self.getRow()
         tk.Label(self.window, text="Locations (comma-separated):").grid(
             row=r, column=0, padx=8, pady=4, sticky="w"
         )
@@ -231,7 +251,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 6
+        r = self.getRow()
         tk.Label(self.window, text="Authors (comma-separated):").grid(
             row=r, column=0, padx=8, pady=4, sticky="w"
         )
@@ -250,7 +270,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 7
+        r = self.getRow()
         tk.Label(self.window, text="Date from (YYYYMMDD):").grid(
             row=r, column=0, padx=8, pady=4, sticky="w"
         )
@@ -258,8 +278,13 @@ class EFEQueryUI:
         tk.Entry(self.window, textvariable=self.dateFromVar, width=20).grid(
             row=r, column=1, padx=8, pady=4, sticky="w"
         )
+        # Place 'to' date entry and its label on the same row, with the label to the right of the entry
+        self.dateToVar = tk.StringVar()
+        tk.Entry(self.window, textvariable=self.dateToVar, width=20).grid(
+            row=r, column=2, padx=8, pady=4, sticky="e"
+        )
         tk.Label(self.window, text="Date to (YYYYMMDD):").grid(
-            row=r, column=2, padx=8, pady=4, sticky="w"
+            row=r, column=3, padx=8, pady=4, sticky="w"
         )
 
     def createDateToAndTopResults(self) -> None:
@@ -272,11 +297,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 8
-        self.dateToVar = tk.StringVar()
-        tk.Entry(self.window, textvariable=self.dateToVar, width=20).grid(
-            row=r, column=2, padx=8, pady=(0, 8), sticky="w"
-        )
+        r = self.getRow()
         tk.Label(self.window, text="Top results:").grid(
             row=r, column=0, padx=8, pady=(0, 8), sticky="w"
         )
@@ -295,7 +316,7 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 9
+        r = self.getRow()
         buttonsFrame = tk.Frame(self.window)
         buttonsFrame.grid(row=r, column=0, columnspan=3, padx=8, pady=8, sticky="we")
         tk.Button(buttonsFrame, text="Search", command=self.onSearch).pack(
@@ -315,12 +336,17 @@ class EFEQueryUI:
         Returns:
             - None
         """
-        r = 10
+        r = self.getRow()
         tk.Label(self.window, text="Results:").grid(
             row=r, column=0, padx=8, pady=4, sticky="nw"
         )
         self.results = scrolledtext.ScrolledText(self.window, wrap=tk.WORD, height=20)
         self.results.grid(row=r, column=1, columnspan=2, padx=8, pady=4, sticky="nsew")
+        # Let the results row expand to fill extra vertical space
+        try:
+            self.window.grid_rowconfigure(r, weight=1)
+        except Exception:
+            pass
         self.writeResult("Ready. Select parameters and click Search.")
 
     def writeResult(self, text: str, clear: bool = False) -> None:
