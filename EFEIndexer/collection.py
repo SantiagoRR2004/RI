@@ -1,4 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor
+import nltk
 from whoosh import fields
 from whoosh import index
 from whoosh import analysis
@@ -26,7 +27,9 @@ class Collection:
     Class representing a collection of documents.
     """
 
-    text_analyzer = analysis.SimpleAnalyzer()
+    simple_analyzer = analysis.SimpleAnalyzer()
+    spanish_stopwords = frozenset(nltk.corpus.stopwords.words("spanish"))
+    standard_analyzer = analysis.StandardAnalyzer(stoplist=spanish_stopwords)
     schema = fields.Schema(
         documentNumber=fields.ID(stored=True, unique=True),
         # Skip documentID as it is the same as documentNumber
@@ -35,21 +38,17 @@ class Collection:
         subCategory=NOTHING(),  # This is an abbreviation of category
         files=NOTHING(),  # Not needed
         destination=NOTHING(),  # Not compulsory, it is the abbreviation of location where the notice is read.
-        category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
+        category=fields.KEYWORD(stored=True, analyzer=simple_analyzer),  # Compulsory
         key=NOTHING(),  # Not needed
         number=NOTHING(),  # Not needed
         priority=NOTHING(),  # There are only "R", "U" and some "B"
-        title=fields.TEXT(
-            stored=True, analyzer=analysis.StandardAnalyzer()
-        ),  # Compulsory
+        title=fields.TEXT(stored=True, analyzer=standard_analyzer),  # Compulsory
         subtitle=fields.TEXT(
-            stored=True, analyzer=analysis.StandardAnalyzer()
+            stored=True, analyzer=standard_analyzer
         ),  # The same as title
-        text=fields.TEXT(
-            stored=True, analyzer=analysis.StandardAnalyzer()
-        ),  # Main content
+        text=fields.TEXT(stored=True, analyzer=standard_analyzer),  # Main content
         author=fields.KEYWORD(
-            stored=True, analyzer=text_analyzer, commas=False
+            stored=True, analyzer=simple_analyzer, commas=False
         ),  # Not compulsory
         location=fields.TEXT(stored=True),
         keywords=fields.KEYWORD(stored=True, commas=True),  # Compulsory
