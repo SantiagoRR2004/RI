@@ -1,28 +1,11 @@
-import os
-from typing import List
-from whoosh import index
-from whoosh.index import FileIndex
-from whoosh.searching import Searcher
+from whoosh.query import And, Or, Term, DateRange
 from whoosh.qparser import MultifieldParser
-from whoosh.query import And, Or, Term, DateRange, Phrase
+from whoosh.index import FileIndex
 from datetime import datetime
-from whoosh import analysis
-
+from typing import List
+import interface
 
 LIMIT = 5
-"""
-schema = fields.Schema(
-        documentNumber=fields.ID(stored=True, unique=True),
-        datetime=fields.DATETIME(stored=True),
-        category=fields.KEYWORD(stored=True, analyzer=text_analyzer),  # Compulsory
-        title=fields.TEXT(stored=True, analyzer=text_analyzer),  # Compulsory
-        subtitle=fields.TEXT(stored=True, analyzer=text_analyzer),  # The same as title
-        text=fields.TEXT(stored=True, analyzer=text_analyzer),  # Main content
-        author=fields.TEXT(stored=True, analyzer=text_analyzer), 
-        location=fields.TEXT(stored=True),
-        keywords=fields.KEYWORD(stored=True, commas=True),  # Compulsory
-    )
-"""
 
 
 def search(
@@ -80,102 +63,5 @@ def search(
             print()
 
 
-def main():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    index_path = os.path.join(current_dir, "indexdir")
-
-    if not os.path.exists(index_path):
-        print(f"Index not found at {index_path}")
-        return
-
-    ix = index.open_dir(index_path)
-
-    print("EFE Query System")
-    print("=" * 50)
-
-    while True:
-        print("\nOptions:")
-        print("1. Search")
-        print("2. Exit")
-        choice = input("\nSelect option: ").strip()
-
-        if choice == "1":
-            query_text = input("Enter query: ").strip()
-            if not query_text:
-                print("Query cannot be empty")
-                continue
-
-            print(
-                "\nFields to search or filter by (in case of add more than one element per camp, write them separated by comma ','):\n"
-            )
-            fields_input = input(
-                "Fields to search (title,subtitle,text,category,location,author,keywords) [default: title,subtitle,text]: "
-            ).strip()
-            if fields_input:
-                fields = [f.strip() for f in fields_input.split(",")]
-            else:
-                fields = ["title", "subtitle", "text"]
-
-            categories_input = input("Filter by categories (optional): ").strip()
-            if categories_input:
-                categories = [c.strip().lower() for c in categories_input.split(",")]
-            else:
-                categories = None
-            keyword = input("Filter by keywords (optional): ").strip()
-            if keyword:
-                keyword = [k.strip().lower() for k in keyword.split(",")]
-            else:
-                keyword = None
-            location_input = input("Filter by locations (optional): ").strip()
-            if location_input:
-                location = [l.strip().lower() for l in location_input.split(",")]
-            else:
-                location = None
-            author_input = input("Filter by authors (optional): ").strip()
-            if author_input:
-                author = [a.strip() for a in author_input.split(",")]
-            else:
-                author = None
-
-            date_from_str = input("Date from YYYYMMDD (optional): ").strip()
-            date_to_str = input("Date to YYYYMMDD (optional): ").strip()
-
-            date_from = None
-            date_to = None
-
-            if date_from_str:
-                try:
-                    date_from = datetime.strptime(date_from_str, "%Y%m%d")
-                except ValueError:
-                    print("Invalid date format")
-                    continue
-
-            if date_to_str:
-                try:
-                    date_to = datetime.strptime(date_to_str, "%Y%m%d")
-                except ValueError:
-                    print("Invalid date format")
-                    continue
-
-            search(
-                ix,
-                query_text,
-                fields,
-                categories,
-                keyword,
-                location,
-                author,
-                date_from,
-                date_to,
-            )
-
-        elif choice == "2":
-            print("Exiting...")
-            break
-
-        else:
-            print("Invalid option")
-
-
 if __name__ == "__main__":
-    main()
+    interface.EFEQueryUI()
