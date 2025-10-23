@@ -1,0 +1,6 @@
+ipykernel
+nbstripout
+pandas
+scikit-learn
+numpy
+Whoosh

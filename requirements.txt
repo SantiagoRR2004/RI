@@ -5,3 +5,4 @@ nbstripout
 -r ./Prácticas/P2_Whoosh/p2_1/requirements.txt
 -r ./Prácticas/P3/requirements.txt
 -r ./Prácticas/P4/requirements.txt
+-r ./Prácticas/P5/requirements.txt
