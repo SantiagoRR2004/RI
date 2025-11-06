@@ -2,3 +2,4 @@ ipykernel
 nbstripout
 pandas
 numpy
+matplotlib
