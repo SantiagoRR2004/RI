@@ -3,3 +3,4 @@ nbstripout
 pandas
 numpy
 matplotlib
+Whoosh
