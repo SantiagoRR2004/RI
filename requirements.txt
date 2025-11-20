@@ -7,3 +7,4 @@ nbstripout
 -r ./Prácticas/P4/requirements.txt
 -r ./Prácticas/P5/requirements.txt
 -r ./Prácticas/P8/requirements.txt
+-r ./Prácticas/P9/requirements.txt

@@ -1,0 +1,7 @@
+ipykernel
+nbstripout
+rank_bm25
+nltk
+numpy
+pandas
+matplotlib
