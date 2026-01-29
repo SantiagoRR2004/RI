@@ -1,10 +1,10 @@
 black
 nbstripout
 -r ./EFEIndexer/requirements.txt
--r ./Prácticas/P1_Modelos_de_representacion/P1_1/requirements.txt
--r ./Prácticas/P2_Whoosh/p2_1/requirements.txt
--r ./Prácticas/P3/requirements.txt
--r ./Prácticas/P4/requirements.txt
--r ./Prácticas/P5/requirements.txt
--r ./Prácticas/P8/requirements.txt
--r ./Prácticas/P9/requirements.txt
+-r ./P1/requirements.txt
+-r ./P2/requirements.txt
+-r ./P3/requirements.txt
+-r ./P4/requirements.txt
+-r ./P5/requirements.txt
+-r ./P8/requirements.txt
+-r ./P9/requirements.txt
